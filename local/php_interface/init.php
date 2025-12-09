@@ -289,3 +289,101 @@ function excludeDetailTextFromSearch($arFields)
 // Регистрируем обработчик события индексации
 $eventManager = EventManager::getInstance();
 $eventManager->addEventHandler('search', 'BeforeIndex', 'excludeDetailTextFromSearch');
+
+/**
+ * ======================================================================
+ * Глобальная сортировка каталога (SORT_PRIORITY)
+ * ======================================================================
+ */
+
+use Bitrix\Main\Loader;
+
+/**
+ * Обновляет свойство SORT_PRIORITY для товара на основе его характеристик.
+ * Логика:
+ * 1. Хит (FEATURED) -> 300
+ * 2. Есть цена (>0) -> 200
+ * 3. Нет цены (0)   -> 100
+ *
+ * @param int $elementId ID элемента
+ * @param int $iblockId ID инфоблока
+ * @return void
+ */
+function updateProductSortPriority($elementId, $iblockId)
+{
+    // Проверяем, что работаем только с товарными инфоблоками
+    if (!defined('IBLOCK_IDS_PRODUCT') || !in_array($iblockId, IBLOCK_IDS_PRODUCT)) {
+        return;
+    }
+
+    if (!Loader::includeModule('iblock') || !Loader::includeModule('catalog')) {
+        return;
+    }
+
+    $priority = 100; // Дефолт (нет цены)
+
+    // 1. Получаем свойства (FEATURED)
+    // Используем GetList, чтобы получить актуальные данные из БД
+    $dbProps = CIBlockElement::GetProperty($iblockId, $elementId, [], ['CODE' => 'FEATURED']);
+    $isFeatured = false;
+    if ($arProp = $dbProps->Fetch()) {
+        $val = $arProp['VALUE_ENUM'] ?? $arProp['VALUE']; // Может быть списком или строкой
+        if ($val == 'Y' || $val == 'Да') {
+            $isFeatured = true;
+        }
+    }
+
+    // 2. Получаем цену (Базовую / Оптимальную)
+    // CPrice::GetBasePrice возвращает базовую цену
+    $arPrice = CPrice::GetBasePrice($elementId);
+    $price = 0;
+    if ($arPrice) {
+        $price = (float) $arPrice['PRICE'];
+    }
+
+    // 3. Рассчитываем приоритет
+    if ($isFeatured) {
+        $priority = 300;
+    } elseif ($price > 0) {
+        $priority = 200;
+    } else {
+        $priority = 100;
+    }
+
+    // 4. Обновляем свойство SORT_PRIORITY
+    // Используем SetPropertyValuesEx, чтобы не вызывать пересохранение всего элемента (и не зациклить события)
+    CIBlockElement::SetPropertyValuesEx($elementId, $iblockId, ['SORT_PRIORITY' => $priority]);
+}
+
+/**
+ * Обработчики событий для авто-обновления SORT_PRIORITY
+ */
+
+// При обновлении/добавлении элемента инфоблока
+AddEventHandler("iblock", "OnAfterIBlockElementAdd", "handlerOnAfterIBlockElementUpdate");
+AddEventHandler("iblock", "OnAfterIBlockElementUpdate", "handlerOnAfterIBlockElementUpdate");
+
+function handlerOnAfterIBlockElementUpdate($arFields)
+{
+    if ($arFields['ID'] > 0 && $arFields['IBLOCK_ID'] > 0) {
+        // Важно: чтобы избежать рекурсии вызовем функцию напрямую
+        updateProductSortPriority($arFields['ID'], $arFields['IBLOCK_ID']);
+    }
+}
+
+// При изменении цены (Bitrix Catalog events)
+// Старые события (catalog module)
+AddEventHandler("catalog", "OnPriceAdd", "handlerOnPriceUpdate");
+AddEventHandler("catalog", "OnPriceUpdate", "handlerOnPriceUpdate");
+
+function handlerOnPriceUpdate($id, $arFields)
+{
+    if (isset($arFields['PRODUCT_ID']) && $arFields['PRODUCT_ID'] > 0) {
+        // Нам нужен IBLOCK_ID. Получим его по элементу.
+        $elementId = $arFields['PRODUCT_ID'];
+        $res = CIBlockElement::GetByID($elementId);
+        if ($ob = $res->GetNext()) {
+            updateProductSortPriority($elementId, $ob['IBLOCK_ID']);
+        }
+    }
+}

@@ -36,6 +36,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
     
     // Основной CSS
     Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/css/main.css?v=1.1.48", false, true);
+    Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/css/blocks/product-card.css?v=1.0.0", false, true);
 
     //	Asset::getInstance()->addCss("https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css");
 //    Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/assets/vendor/css/bootstrap.min.css");

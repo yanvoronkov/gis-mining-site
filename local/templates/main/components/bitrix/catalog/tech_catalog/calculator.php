@@ -96,4 +96,79 @@ $APPLICATION->IncludeComponent(
     $component,
     ["HIDE_ICONS" => "Y"]
 );
+
+// ====================================================================
+// БЛОК "ТОВАРЫ ТОГО ЖЕ ПРОИЗВОДИТЕЛЯ" (SIMILAR PRODUCTS)
+// ====================================================================
+
+// Получаем ID/Code текущего товара из переменных
+$currentElementId = 0;
+$filter = ["IBLOCK_ID" => $arParams["IBLOCK_ID"], "ACTIVE" => "Y"];
+
+if (!empty($arResult["VARIABLES"]["ELEMENT_ID"])) {
+    $filter["ID"] = $arResult["VARIABLES"]["ELEMENT_ID"];
+} elseif (!empty($arResult["VARIABLES"]["ELEMENT_CODE"])) {
+    $filter["CODE"] = $arResult["VARIABLES"]["ELEMENT_CODE"];
+}
+
+// Запрашиваем свойство MANUFACTURER
+if (!empty($filter["ID"]) || !empty($filter["CODE"])) {
+    $res = CIBlockElement::GetList([], $filter, false, false, ["ID", "IBLOCK_ID", "PROPERTY_MANUFACTURER"]);
+    if ($ob = $res->GetNextElement()) {
+        $fields = $ob->GetFields();
+        $props = $ob->GetProperties();
+
+        $currentElementId = $fields["ID"];
+        $manufacturerValue = $props["MANUFACTURER"]["VALUE"];
+        $manufacturerEnumId = $props["MANUFACTURER"]["VALUE_ENUM_ID"];
+
+        // ID для фильтрации (если список - то ENUM_ID, если нет - VALUE)
+        $manuPropFilterId = $manufacturerEnumId ?: $manufacturerValue;
+
+        if (!empty($manuPropFilterId)) {
+            global $arrFilterManufacturer;
+            $arrFilterManufacturer = [
+                "PROPERTY_MANUFACTURER" => $manuPropFilterId,
+                "!ID" => $currentElementId
+            ];
+
+            $APPLICATION->IncludeComponent(
+                "bitrix:catalog.section",
+                "similar_products",
+                [
+                    "IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
+                    "IBLOCK_ID" => $arParams["IBLOCK_ID"],
+                    "FILTER_NAME" => "arrFilterManufacturer",
+                    "PAGE_ELEMENT_COUNT" => 4,
+                    "PRICE_CODE" => $arParams["PRICE_CODE"],
+                    "CACHE_TYPE" => "A",
+                    "CACHE_TIME" => "3600",
+                    "CACHE_GROUPS" => "Y",
+                    "SHOW_ALL_WO_SECTION" => "Y",
+                    "HIDE_NOT_AVAILABLE" => "Y",
+                    "SET_TITLE" => "N",
+                    "SET_BROWSER_TITLE" => "N",
+                    "SET_META_DESCRIPTION" => "N",
+                    "SET_META_KEYWORDS" => "N",
+                    "ADD_SECTIONS_CHAIN" => "N",
+                    "DISPLAY_COMPARE" => "N",
+                    "DETAIL_URL" => $arResult["FOLDER"] . $arResult["URL_TEMPLATES"]["element"],
+                ],
+                $component
+            );
+        }
+    }
+}
+?>
+
+<?php
+// ====================================================================
+// БЛОК FAQ
+// ====================================================================
+$APPLICATION->IncludeComponent(
+    "custom:faq.section",
+    ".default",
+    [],
+    $component
+);
 ?>

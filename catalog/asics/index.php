@@ -57,6 +57,7 @@ $APPLICATION->SetPageProperty("TWITTER:IMAGE", $ogImageUrl);
 
 // Свойства для шаблона
 $APPLICATION->SetPageProperty("header_right_class", "color-block");
+$APPLICATION->SetPageProperty("h1_class", "catalog-page__title section-title highlighted-color");
 
 // ====================================================================
 // SEF URL ШАБЛОНЫ
@@ -161,7 +162,7 @@ $APPLICATION->IncludeComponent(
 		],
 
 		// Пагинация
-		"PAGER_TEMPLATE" => ".default",
+		"PAGER_TEMPLATE" => "catalog_new",
 		"PAGER_TITLE" => "Товары",
 		"PAGER_SHOW_ALWAYS" => "N",
 		"PAGER_DESC_NUMBERING" => "N",

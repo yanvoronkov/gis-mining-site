@@ -40,6 +40,7 @@ $APPLICATION->SetPageProperty("TWITTER:IMAGE", $ogImageUrl);
 
 // --- СЛУЖЕБНЫЕ СВОЙСТВА ---
 $APPLICATION->SetPageProperty("header_right_class", "color-block");
+$APPLICATION->SetPageProperty("h1_class", "catalog-page__title section-title highlighted-color");
 
 // Получаем данные инфоблока
 $iblockData = [];
@@ -55,7 +56,6 @@ if (CModule::IncludeModule('iblock')) {
 ?>
 
 <div class="catalog-page catalog-new container" id="app-root" data-iblock-id="<?= $IBLOCK_ID ?>">
-    <h1 class="catalog-page__title section-title highlighted-color">Газопоршневые электростанции (ГПУ) для майнинга</h1>
 
     <div class="catalog-page__body">
         <!-- Сайдбар БЕЗ фильтра -->

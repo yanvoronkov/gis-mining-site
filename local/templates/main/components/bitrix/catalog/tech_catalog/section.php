@@ -54,55 +54,14 @@ if (!empty($smartFilterPath)) {
 }
 
 // ====================================================================
-// КАСТОМНАЯ СОРТИРОВКА ДЛЯ ASIC
+// ГЛОБАЛЬНЫЙ ФИЛЬТР ДЛЯ КОМПОНЕНТОВ
 // ====================================================================
-// Реализуем логику: Featured → с ценой (ASC) → без цены
+// Кастомная сортировка реализована в result_modifier.php шаблона catalog.section
+// Это позволяет сохранить работу пагинации
 // ====================================================================
 global $arrFilter;
 if (!is_array($arrFilter)) {
     $arrFilter = [];
-}
-
-if ($arParams["IBLOCK_ID"] == IBLOCK_CATALOG_ASICS) {
-    $arSelect = ['ID', 'PROPERTY_FEATURED', 'CATALOG_PRICE_1'];
-    $arFilter = [
-        'IBLOCK_ID' => IBLOCK_CATALOG_ASICS,
-        'ACTIVE' => 'Y'
-    ];
-
-    if (!empty($arrFilter)) {
-        $arFilter = array_merge($arFilter, $arrFilter);
-    }
-
-    $res = CIBlockElement::GetList([], $arFilter, false, false, $arSelect);
-
-    $featured = [];
-    $withPrice = [];
-    $withoutPrice = [];
-
-    while ($el = $res->GetNext()) {
-        $price = (float) ($el['CATALOG_PRICE_1'] ?? 0);
-        $isFeatured = ($el['PROPERTY_FEATURED_VALUE'] === 'Да' || $el['PROPERTY_FEATURED_VALUE'] === 'Y');
-
-        if ($isFeatured) {
-            $featured[] = $el;
-        } elseif ($price > 0) {
-            $withPrice[] = $el;
-        } else {
-            $withoutPrice[] = $el;
-        }
-    }
-
-    if (!empty($withPrice)) {
-        usort($withPrice, fn($a, $b) => $a['CATALOG_PRICE_1'] <=> $b['CATALOG_PRICE_1']);
-    }
-
-    $sorted = array_merge($featured, $withPrice, $withoutPrice);
-    $sortedIds = array_column($sorted, 'ID');
-
-    if (!empty($sortedIds)) {
-        $arrFilter['ID'] = $sortedIds;
-    }
 }
 
 // ====================================================================
@@ -193,10 +152,10 @@ if ($IBLOCK_ID == IBLOCK_CATALOG_ASICS) {
                 [
                     "IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
                     "IBLOCK_ID" => $arParams["IBLOCK_ID"],
-                    "ELEMENT_SORT_FIELD" => "ID",
-                    "ELEMENT_SORT_ORDER" => "asc",
-                    "ELEMENT_SORT_FIELD2" => "sort",
-                    "ELEMENT_SORT_ORDER2" => "asc",
+                    "ELEMENT_SORT_FIELD" => "PROPERTY_SORT_PRIORITY",
+                    "ELEMENT_SORT_ORDER" => "DESC",
+                    "ELEMENT_SORT_FIELD2" => "CATALOG_PRICE_1",
+                    "ELEMENT_SORT_ORDER2" => "ASC",
                     "PROPERTY_CODE" => $arParams["LIST_PROPERTY_CODE"],
                     "META_KEYWORDS" => $arParams["LIST_META_KEYWORDS"],
                     "META_DESCRIPTION" => $arParams["LIST_META_DESCRIPTION"],

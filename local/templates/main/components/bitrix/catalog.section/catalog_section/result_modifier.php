@@ -41,6 +41,15 @@ foreach ($arResult['ITEMS'] as $item) {
     }
 }
 
+// Сортируем хиты по возрастанию цены
+if (!empty($featured)) {
+    usort($featured, function ($a, $b) {
+        $priceA = (float) ($a['ITEM_PRICES'][0]['PRICE'] ?? 0);
+        $priceB = (float) ($b['ITEM_PRICES'][0]['PRICE'] ?? 0);
+        return $priceA <=> $priceB;
+    });
+}
+
 // Сортируем товары с ценой по возрастанию цены
 if (!empty($withPrice)) {
     usort($withPrice, function ($a, $b) {

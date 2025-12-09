@@ -833,11 +833,11 @@ $viewedProductIds = array_slice($viewedProductIds, 0, 4);
                                 </div>
                             </div>
                             <?php /*<div class="profit-calculator__metric-card preloader-block">
-          <div class="profit-calculator__metric-card-label">Окупаемость</div>
-          <div class="profit-calculator__metric-card-value highlighted-color">
-            <span id="pc-payback" class="preloader-text">—</span>
-          </div>
-        </div>*/ ?>
+     <div class="profit-calculator__metric-card-label">Окупаемость</div>
+     <div class="profit-calculator__metric-card-value highlighted-color">
+       <span id="pc-payback" class="preloader-text">—</span>
+     </div>
+   </div>*/ ?>
                         </div>
 
                         <div class="profit-calculator__fields">
@@ -1513,54 +1513,7 @@ $viewedProductIds = array_slice($viewedProductIds, 0, 4);
     </div>
 </section>
 
-<section class="recommended section-padding container">
-    <h2 class="recommended__title section-title">Товары того же производителя</h2>
 
-    <?php if (!empty($arResult["PROPERTIES"]["MANUFACTURER"]["VALUE"])): ?>
-        <?php
-        global $arrFilterManufacturer;
-
-        // Получаем ID значения свойства производителя
-        $manufacturerValue = $arResult["PROPERTIES"]["MANUFACTURER"]["VALUE"];
-        $manufacturerPropertyId = $arResult["PROPERTIES"]["MANUFACTURER"]["VALUE_ENUM_ID"]
-            ?? $manufacturerValue; // для списков хранится ENUM_ID
-    
-        $arrFilterManufacturer = [
-            "PROPERTY_MANUFACTURER" => $manufacturerPropertyId,
-            "!ID" => $arResult["ID"],
-        ];
-        ?>
-
-        <?php
-        $APPLICATION->IncludeComponent(
-            "bitrix:catalog.section",
-            "catalog_section_slider", // Слайдер для мобильных
-            array(
-                "IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
-                "IBLOCK_ID" => $arParams["IBLOCK_ID"],
-                "FILTER_NAME" => "arrFilterManufacturer",
-                "PAGE_ELEMENT_COUNT" => 4, // кол-во товаров в блоке (максимум 4)
-                "PRICE_CODE" => $arParams["PRICE_CODE"],
-                "CACHE_TYPE" => "A",
-                "CACHE_TIME" => "3600",
-                "CACHE_GROUPS" => "Y",
-                "SHOW_ALL_WO_SECTION" => "Y",
-                "HIDE_NOT_AVAILABLE" => "Y",
-                "SET_TITLE" => "N",
-                "SET_BROWSER_TITLE" => "N",
-                "SET_META_DESCRIPTION" => "N",
-                "SET_META_KEYWORDS" => "N",
-                "ADD_SECTIONS_CHAIN" => "N",
-                "DISPLAY_COMPARE" => "N",
-                "DETAIL_URL" => $arParams["DETAIL_URL"], // Передаем правильный шаблон URL
-            ),
-            $component
-        );
-        ?>
-    <?php else: ?>
-        <p>У этого товара не указан производитель.</p>
-    <?php endif; ?>
-</section>
 
 
 <!-- <section class="viewed section-padding container">
@@ -1635,95 +1588,6 @@ echo "</pre>";
         */
     ?>
 </section> -->
-
-
-
-<!-- Секция "Часто задаваемые вопросы" (FAQ) -->
-<section class="faq-section section-padding">
-    <div class="container">
-        <h2>Часто задаваемые вопросы</h2>
-        <div class="faq-list">
-            <!-- Аккордеон -->
-
-            <details class="faq-item">
-                <summary class="faq-item__question">
-                    Какие способы оплаты у вас есть?
-                </summary>
-                <div class="faq-item__answer">
-                    <p>Наличный и безналичный расчет, оплата по договору.</p>
-                </div>
-            </details>
-
-            <details class="faq-item">
-                <summary class="faq-item__question">
-                    Какой срок поставки?
-                </summary>
-                <div class="faq-item__answer">
-                    <p>От 1 дня (в зависимости от наличия интересующего объема).</p>
-                </div>
-            </details>
-
-            <details class="faq-item">
-                <summary class="faq-item__question">
-                    Есть ли у вас мастерские? Какие сроки ремонта оборудования на хостинге?
-                </summary>
-                <div class="faq-item__answer">
-                    <p>Наши дата-центры оборудованы собственными мастерскими с квалифицированной командой
-                        специалистов. При
-                        невозможности оперативного устранения поломки, в рамках гарантийного срока предоставляем
-                        подменное устройство на весь
-                        срок ремонта.</p>
-                </div>
-            </details>
-
-            <details class="faq-item is-hidden-initially">
-                <summary class="faq-item__question">
-                    Можно купить оборудование в рассрочку? Какие условия?
-                </summary>
-                <div class="faq-item__answer">
-                    <p>Условия рассрочки и лизинга обсуждаются индивидуально. Для получения коммерческого
-                        предложения свяжитесь с нашими
-                        менеджерами любым удобным способом.</p>
-                </div>
-            </details>
-
-            <details class="faq-item is-hidden-initially">
-                <summary class="faq-item__question">
-                    Где располагается дата-центр?
-                </summary>
-                <div class="faq-item__answer">
-                    <p>Хостинг запущен на территории Калининской АЭС в Тверской области. ЦОД
-                        «Калининский» располагается всего в 380
-                        км. от Москвы, что упрощает логистику и позволяет организовывать доступные экскурсии для
-                        действующих и потенциальных
-                        клиентов.</p>
-                </div>
-            </details>
-
-            <details class="faq-item is-hidden-initially">
-                <summary class="faq-item__question">
-                    Вы состоите в реестре майнеров РФ?
-                </summary>
-                <div class="faq-item__answer">
-                    <p>Да, компания GIS Mining является участником реестра в строгом соответствии с
-                        действующим законодательством
-                        России.</p>
-                </div>
-            </details>
-            <!-- Кнопка "Смотреть еще" -->
-            <div class="faq-actions">
-                <button type="button" class="btn faq-actions__load-more load-more-button"
-                    data-load-more-target=".faq-section .faq-item.is-hidden-initially" data-load-more-count="6"
-                    id="faqLoadMoreBtn2">Показать ещё
-                    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M11 1.4043L6 6.4043L1 1.4043" stroke="#131315" stroke-width="1.5"
-                            stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-</section>
 
 
 <?php

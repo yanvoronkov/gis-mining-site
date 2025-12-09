@@ -35,7 +35,7 @@ $APPLICATION->SetPageProperty("TWITTER:DESCRIPTION", "Готовые решен�
 $APPLICATION->SetPageProperty("TWITTER:IMAGE", $ogImageUrl);
 
 $APPLICATION->SetPageProperty("header_right_class", "color-block");
-$APPLICATION->SetPageProperty("h1_class", "catalog-page__title highlighted-color");
+$APPLICATION->SetPageProperty("h1_class", "catalog-page__title section-title highlighted-color");
 
 $iblockData = [];
 if (CModule::IncludeModule('iblock')) {
