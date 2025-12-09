@@ -24,7 +24,6 @@ if (!Loader::includeModule('iblock') || !Loader::includeModule('catalog')) {
 
 // --- ID инфоблока ---
 $IBLOCK_ID = IBLOCK_CATALOG_VIDEOCARD;
-$sefFolder = '/catalog/videocard/';
 
 // ====================================================================
 // SEO-НАСТРОЙКИ ДЛЯ СТРАНИЦЫ РАЗДЕЛА
@@ -90,7 +89,7 @@ $APPLICATION->IncludeComponent(
 
         // SEF режим
         "SEF_MODE" => "Y",
-        "SEF_FOLDER" => $sefFolder,
+        "SEF_FOLDER" => "/catalog/videocard/",
         "SEF_URL_TEMPLATES" => $sefUrlTemplates,
         "DETAIL_STRICT_SECTION_CHECK" => "N",
 
