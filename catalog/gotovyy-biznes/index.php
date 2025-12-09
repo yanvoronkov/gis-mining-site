@@ -35,6 +35,7 @@ $APPLICATION->SetPageProperty("TWITTER:DESCRIPTION", "Готовые решен�
 $APPLICATION->SetPageProperty("TWITTER:IMAGE", $ogImageUrl);
 
 $APPLICATION->SetPageProperty("header_right_class", "color-block");
+$APPLICATION->SetPageProperty("h1_class", "catalog-page__title highlighted-color");
 
 $iblockData = [];
 if (CModule::IncludeModule('iblock')) {
@@ -46,7 +47,7 @@ if (CModule::IncludeModule('iblock')) {
 ?>
 
 <div class="catalog-page catalog-new container" id="app-root" data-iblock-id="<?= $IBLOCK_ID ?>">
-    <h1 class="catalog-page__title section-title highlighted-color">Готовый бизнес для майнинга</h1>
+    <!-- H1 выводится глобально из header.php -->
 
     <div class="catalog-page__body">
         <?php
@@ -58,10 +59,6 @@ if (CModule::IncludeModule('iblock')) {
         ?>
 
         <section class="catalog-page__content section-padding">
-            <div class="catalog-content__header">
-                <h2 class="catalog-content__title section-title"><?= $APPLICATION->GetTitle() ?></h2>
-            </div>
-
             <?php
             // Комплексный компонент catalog
             // ВАЖНО: передаем SECTION_LIST_TEMPLATE => "business_grouped"
