@@ -1,0 +1,71 @@
+# =====================================
+# Bitrix CMS .gitignore
+# =====================================
+
+# --- Ядро Битрикса (не коммитим) ---
+/bitrix/*
+!/bitrix/.settings.php
+!/bitrix/php_interface/
+/bitrix/php_interface/*
+!/bitrix/php_interface/dbconn.php
+
+# --- Загруженные файлы ---
+/upload/
+
+# --- Кеш ---
+/bitrix/cache/
+/bitrix/managed_cache/
+/bitrix/stack_cache/
+/bitrix/html_pages/
+
+# --- Логи ---
+*.log
+/log_debug.txt
+/catalog_debug.txt
+/filter_debug.txt
+/update_prices.log
+
+# --- Временные файлы ---
+/temp_files/
+*.bak
+*.swp
+*.tmp
+*~
+
+# --- IDE и редакторы ---
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.project
+.settings/
+
+# --- macOS ---
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# --- Windows ---
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- Бекапы urlrewrite ---
+/urlrewrite.php.bak
+/urlrewrite-old-backup.php
+/.urlrewrite.php
+
+# --- Тестовые/отладочные скрипты ---
+/test_*.php
+/check_*.php
+/debug_*.php
+/clear_cache*.php
+/catalog_diagnostic.php
+
+# --- Документация (временная) ---
+/*.md
+!/README.md
+
+# --- Прочее ---
+/marketplace/
