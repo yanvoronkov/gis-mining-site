@@ -29,31 +29,11 @@ $IBLOCK_ID = IBLOCK_CATALOG_ASICS;
 // SEO-НАСТРОЙКИ ДЛЯ СТРАНИЦЫ РАЗДЕЛА
 // (Для детальной страницы SEO управляется в element.php)
 // ====================================================================
-$protocol = \Bitrix\Main\Context::getCurrent()->getRequest()->isHttps() ? "https" : "http";
-$serverName = defined('SITE_SERVER_NAME') && strlen(SITE_SERVER_NAME) > 0 ? SITE_SERVER_NAME : $_SERVER['SERVER_NAME'];
-$pageUrl = $APPLICATION->GetCurPage(false);
-$fullPageUrl = $protocol . '://' . $serverName . $pageUrl;
-$ogImageUrl = $protocol . '://' . $serverName . '/local/templates/main/assets/img/home/home_open-graph_image.png';
 
 $APPLICATION->SetPageProperty("TITLE", "Купить ASIC-майнер для майнинга Bitcoin — каталог GIS Mining 2025");
-$APPLICATION->SetTitle("ASIC-майнеры");
+$APPLICATION->SetTitle("Каталог ASIC майнеров для добычи криптовалют");
 $APPLICATION->SetPageProperty("description", "Официальные поставки ASIC-майнеров от Bitmain, WhatsMiner и Goldshell под заказ с оплатой НДС и ГТД РФ. Размещение оборудования на нашем официальном хостинге. GIS Mining - ваш надежный поставщик под ключ.");
 $APPLICATION->SetPageProperty("robots", "index, follow");
-
-// Open Graph
-$APPLICATION->SetPageProperty("OG:TITLE", "Купить ASIC-майнер для майнинга Bitcoin — каталог GIS Mining 2025");
-$APPLICATION->SetPageProperty("OG:DESCRIPTION", "Официальные поставки ASIC-майнеров от Bitmain, WhatsMiner и Goldshell.");
-$APPLICATION->SetPageProperty("OG:TYPE", "website");
-$APPLICATION->SetPageProperty("OG:URL", $fullPageUrl);
-$APPLICATION->SetPageProperty("OG:SITE_NAME", "GIS Mining");
-$APPLICATION->SetPageProperty("OG:LOCALE", "ru_RU");
-$APPLICATION->SetPageProperty("OG:IMAGE", $ogImageUrl);
-
-// Twitter Card
-$APPLICATION->SetPageProperty("TWITTER:CARD", "summary_large_image");
-$APPLICATION->SetPageProperty("TWITTER:TITLE", "Купить ASIC-майнер для майнинга Bitcoin — каталог GIS Mining 2025");
-$APPLICATION->SetPageProperty("TWITTER:DESCRIPTION", "Официальные поставки ASIC-майнеров.");
-$APPLICATION->SetPageProperty("TWITTER:IMAGE", $ogImageUrl);
 
 // Свойства для шаблона
 $APPLICATION->SetPageProperty("header_right_class", "color-block");

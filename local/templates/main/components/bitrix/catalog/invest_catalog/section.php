@@ -111,6 +111,7 @@ if ($listTemplate === "business_grouped") {
                         "COMPATIBLE_MODE" => "Y",
                         "INCLUDE_SUBSECTIONS" => "Y",
                         "SHOW_ALL_WO_SECTION" => "N",
+                        "SET_TITLE" => $arParams["SET_TITLE"],
                     ],
                     $component,
                     ["HIDE_ICONS" => "Y"]

@@ -10,29 +10,10 @@ require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/header.php");
 
 $IBLOCK_ID = IBLOCK_CONTENT_BUSINESS;
 
-$protocol = \Bitrix\Main\Context::getCurrent()->getRequest()->isHttps() ? "https" : "http";
-$serverName = defined('SITE_SERVER_NAME') && strlen(SITE_SERVER_NAME) > 0 ? SITE_SERVER_NAME : $_SERVER['SERVER_NAME'];
-$pageUrl = $APPLICATION->GetCurPage(false);
-$fullPageUrl = $protocol . '://' . $serverName . $pageUrl;
-$ogImageUrl = $protocol . '://' . $serverName . '/local/templates/main/assets/img/home/home_open-graph_image.png';
-
 $APPLICATION->SetPageProperty("TITLE", "Готовый бизнес для майнинга от GIS Mining");
-$APPLICATION->SetTitle("Готовый бизнес");
+$APPLICATION->SetTitle("Готовый бизнес по майнингу от GIS Mining");
 $APPLICATION->SetPageProperty("description", "Готовые решения для майнингового бизнеса от компании GIS Mining.");
 $APPLICATION->SetPageProperty("robots", "index, follow");
-
-$APPLICATION->SetPageProperty("OG:TITLE", "Готовый бизнес для майнинга от GIS Mining");
-$APPLICATION->SetPageProperty("OG:DESCRIPTION", "Готовые решения для майнингового бизнеса от компании GIS Mining.");
-$APPLICATION->SetPageProperty("OG:TYPE", "website");
-$APPLICATION->SetPageProperty("OG:URL", $fullPageUrl);
-$APPLICATION->SetPageProperty("OG:SITE_NAME", "GIS Mining");
-$APPLICATION->SetPageProperty("OG:LOCALE", "ru_RU");
-$APPLICATION->SetPageProperty("OG:IMAGE", $ogImageUrl);
-
-$APPLICATION->SetPageProperty("TWITTER:CARD", "summary_large_image");
-$APPLICATION->SetPageProperty("TWITTER:TITLE", "Готовый бизнес для майнинга от GIS Mining");
-$APPLICATION->SetPageProperty("TWITTER:DESCRIPTION", "Готовые решения для майнингового бизнеса от компании GIS Mining.");
-$APPLICATION->SetPageProperty("TWITTER:IMAGE", $ogImageUrl);
 
 $APPLICATION->SetPageProperty("header_right_class", "color-block");
 $APPLICATION->SetPageProperty("h1_class", "catalog-page__title section-title highlighted-color");
@@ -128,5 +109,64 @@ if (CModule::IncludeModule('iblock')) {
 
     <? $APPLICATION->IncludeComponent("custom:feedback.section", ".default", []); ?>
 </div>
+
+    <!-- PopUp -->
+    <div class="page-business__popup-form popup-form-wrapper js-cart-modal" id="mainPopupFormWrapper"
+         style="display: none;">
+
+        <!-- ВАЖНО: У формы теперь есть класс js-ajax-form, чтобы ее "подхватил" form-actions.js -->
+        <form class="popup-form js-ajax-form" id="businessCartForm" data-metric-goal="send-biznes-lead">
+
+            <button type="button" class="popup-form__close-btn menu-close" id="closeMainPopupFormBtn" aria-label="Закрыть">
+                    <span>
+                        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17 1L1 17M1 1L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                  stroke-linejoin="round"></path>
+                        </svg>
+                    </span>
+            </button>
+
+            <p class="popup-form__text">Получить КП на готовый бизнес</p>
+
+            <p class="popup-form__cta">Заполните форму, чтобы оставить заявку на КП. Мы перезвоним вам в
+                ближайшее время</p>
+
+            <label for="cart_client_name">Ваше имя*:</label>
+            <input type="text" name="client_name" id="cart_client_name" placeholder="Имя"
+                   class="contact-form__input form-input" required aria-label="Имя">
+
+            <label for="cart_client_phone">Телефон*:</label>
+            <input type="tel" name="client_phone" id="cart_client_phone" placeholder="Телефон*"
+                   class="contact-form__input form-input js-phone-mask" required aria-label="Номер телефона">
+
+            <label for="business_cart_client_email">Email:</label>
+            <input type="email" name="client_email" id="business_cart_client_email"
+                   placeholder="your@email.com (необязательно)" class="contact-form__input form-input"
+                   aria-label="Электронная почта">
+
+
+            <input type="hidden" name="source_id" value="41">
+            <input type="hidden" name="utm_source">
+            <input type="hidden" name="utm_medium">
+            <input type="hidden" name="utm_campaign">
+            <input type="hidden" name="utm_content">
+            <input type="hidden" name="utm_term">
+            <!-- Название формы для CRM -->
+            <input type="hidden" name="form_name" value="Заказ из каталога предложений для бизнеса">
+            <input type="hidden" name="page_url" value="">
+
+            <button type="submit" class="btn btn-primary">Получить КП</button>
+
+            <div class="form-group form-check mb-3">
+                <input type="checkbox" id="privacy-policy-main" name="privacy-policy"
+                       class="form-check-input" required>
+                <label for="privacy-policy-main" class="form-check-label">Согласен(а) с <a
+                            href="/policy-confidenciales/" target="_blank"><u>политикой
+                            конфиденциальности</u></a></label>
+            </div>
+            <p class="form-error-message" style="color: red; display: none;"></p>
+        </form>
+    </div>
 
 <?php require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/footer.php"); ?>
