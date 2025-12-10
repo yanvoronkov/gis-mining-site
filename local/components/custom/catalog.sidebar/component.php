@@ -35,5 +35,58 @@ $arResult['FILTER_NAME'] = $FILTER_NAME;
 $arResult['SEF_RULE'] = $SEF_RULE;
 $arResult['SECTION_ID'] = $SECTION_ID;
 
+// =========================================================================
+// Получение списка разделов каталога (Инфоблоков)
+// Исключаем лишние запросы из шаблона
+// =========================================================================
+
+$arResult['MENU_ITEMS'] = [];
+
+// Используем константу IBLOCK_IDS_ALL_CATALOG для фильтрации
+// Если константа не определена, используем пустой массив (безопасность)
+$targetIblockIds = defined('IBLOCK_IDS_ALL_CATALOG') ? IBLOCK_IDS_ALL_CATALOG : [];
+
+if (!empty($targetIblockIds)) {
+    $cacheId = 'catalog_sidebar_menu_' . SITE_ID . '_' . md5(serialize($targetIblockIds));
+    $cacheTime = 3600 * 24; // Кешируем на сутки, структура меняется редко
+    $cacheDir = '/custom/catalog_sidebar';
+
+    $obCache = new CPHPCache;
+    if ($obCache->InitCache($cacheTime, $cacheId, $cacheDir)) {
+        $arResult['MENU_ITEMS'] = $obCache->GetVars();
+    } elseif ($obCache->StartDataCache()) {
+        $dbIblocks = CIBlock::GetList(
+            ['SORT' => 'ASC', 'NAME' => 'ASC'],
+            [
+                'IBLOCK_TYPE_ID' => 'catalog',
+                'ACTIVE' => 'Y',
+                'SITE_ID' => SITE_ID,
+                'ID' => $targetIblockIds // Фильтруем только нужные инфоблоки
+            ]
+        );
+
+        while ($iblock = $dbIblocks->Fetch()) {
+            // Формируем URL
+            $url = '/catalog/' . ($iblock['CODE'] ?: $iblock['ID']) . '/';
+
+            // Особый случай: инфоблок "Размещение" (ID 2 или код razmeschenie)
+            // Лучше вынести ID в константу, но пока поддерживаем легаси логику
+            if ($iblock['ID'] == 2 || $iblock['CODE'] == 'razmeschenie') {
+                $url = '/razmeschenie/';
+            }
+
+            $arResult['MENU_ITEMS'][] = [
+                'ID' => $iblock['ID'],
+                'NAME' => $iblock['NAME'],
+                'CODE' => $iblock['CODE'],
+                'PICTURE' => $iblock['PICTURE'] ? CFile::GetPath($iblock['PICTURE']) : '/local/templates/main/assets/images/no-photo.jpg',
+                'URL' => $url,
+            ];
+        }
+
+        $obCache->EndDataCache($arResult['MENU_ITEMS']);
+    }
+}
+
 // Подключаем шаблон
 $this->IncludeComponentTemplate();

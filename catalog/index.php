@@ -36,14 +36,11 @@ $APPLICATION->SetPageProperty("description", "Полный каталог обо
             <!-- Список категорий каталога -->
             <?php
             $APPLICATION->IncludeComponent(
-                "bitrix:catalog.section.list",
-                "category",
+                "custom:catalog.list",
+                ".default",
                 [
-                    "IBLOCK_TYPE" => "catalog",
-                    "IBLOCK_ID" => IBLOCK_CATALOG_ASICS, // Любой ID, компонент получит все инфоблоки типа catalog
                     "CACHE_TYPE" => "A",
                     "CACHE_TIME" => "3600",
-                    "CACHE_GROUPS" => "Y",
                 ],
                 false
             );

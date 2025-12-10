@@ -31,100 +31,93 @@ if (CModule::IncludeModule('iblock')) {
     <!-- H1 выводится глобально из header.php -->
 
     <div class="catalog-page__body">
-        <?php
-        $APPLICATION->IncludeComponent(
-            "custom:catalog.sidebar",
-            ".default",
-            ["IBLOCK_ID" => $IBLOCK_ID, "SHOW_FILTER" => "N"]
-        );
-        ?>
+            <section class="catalog-page__content section-padding">
+                <?php
+                // Комплексный компонент catalog
+                // ВАЖНО: передаем SECTION_LIST_TEMPLATE => "business_grouped"
+                $APPLICATION->IncludeComponent(
+                    "bitrix:catalog",
+                    "invest_catalog",
+                    [
+                        "IBLOCK_TYPE" => "catalog",
+                        "IBLOCK_ID" => $IBLOCK_ID,
 
-        <section class="catalog-page__content section-padding">
-            <?php
-            // Комплексный компонент catalog
-            // ВАЖНО: передаем SECTION_LIST_TEMPLATE => "business_grouped"
-            $APPLICATION->IncludeComponent(
-                "bitrix:catalog",
-                "invest_catalog",
-                [
-                    "IBLOCK_TYPE" => "catalog",
-                    "IBLOCK_ID" => $IBLOCK_ID,
+                        // SEF режим
+                        "SEF_MODE" => "Y",
+                        "SEF_FOLDER" => "/catalog/gotovyy-biznes/",
+                        "SEF_URL_TEMPLATES" => [
+                            "sections" => "",
+                            "element" => "#ELEMENT_CODE#/",
+                        ],
 
-                    // SEF режим
-                    "SEF_MODE" => "Y",
-                    "SEF_FOLDER" => "/catalog/gotovyy-biznes/",
-                    "SEF_URL_TEMPLATES" => [
-                        "sections" => "",
-                        "element" => "#ELEMENT_CODE#/",
+                        // !!!  ВАЖНЫЙ ПАРАМЕТР: ВЫБОР ШАБЛОНА СПИСКА  !!!
+                        "SECTION_LIST_TEMPLATE" => "business_grouped",
+
+                        // Настройки сортировки
+                        "ELEMENT_SORT_FIELD" => "sort",
+                        "ELEMENT_SORT_ORDER" => "asc",
+
+                        // Кэш
+                        "CACHE_TYPE" => "A",
+                        "CACHE_TIME" => "36000000",
+                        "CACHE_GROUPS" => "Y",
+
+                        // Мета-теги
+                        "SET_TITLE" => "N",
+                        "SET_BROWSER_TITLE" => "N",
+                        "SET_META_KEYWORDS" => "N",
+                        "SET_META_DESCRIPTION" => "N",
+                        "SET_STATUS_404" => "Y",
+                        "SHOW_404" => "Y",
+
+                        // Количество элементов
+                        "PAGE_ELEMENT_COUNT" => "12",
+                        "LINE_ELEMENT_COUNT" => "3",
+
+                        // Пагинация
+                        "DISPLAY_TOP_PAGER" => "N",
+                        "DISPLAY_BOTTOM_PAGER" => "N",
+
+                        // Прочее
+                        "INCLUDE_SUBSECTIONS" => "Y",
+                        "SHOW_ALL_WO_SECTION" => "Y",
+                        "USE_COMPARE" => "N",
+                        "COMPATIBLE_MODE" => "Y",
                     ],
-
-                    // !!!  ВАЖНЫЙ ПАРАМЕТР: ВЫБОР ШАБЛОНА СПИСКА  !!!
-                    "SECTION_LIST_TEMPLATE" => "business_grouped",
-
-                    // Настройки сортировки
-                    "ELEMENT_SORT_FIELD" => "sort",
-                    "ELEMENT_SORT_ORDER" => "asc",
-
-                    // Кэш
-                    "CACHE_TYPE" => "A",
-                    "CACHE_TIME" => "36000000",
-                    "CACHE_GROUPS" => "Y",
-
-                    // Мета-теги
-                    "SET_TITLE" => "N",
-                    "SET_BROWSER_TITLE" => "N",
-                    "SET_META_KEYWORDS" => "N",
-                    "SET_META_DESCRIPTION" => "N",
-                    "SET_STATUS_404" => "Y",
-                    "SHOW_404" => "Y",
-
-                    // Количество элементов
-                    "PAGE_ELEMENT_COUNT" => "12",
-                    "LINE_ELEMENT_COUNT" => "3",
-
-                    // Пагинация
-                    "DISPLAY_TOP_PAGER" => "N",
-                    "DISPLAY_BOTTOM_PAGER" => "N",
-
-                    // Прочее
-                    "INCLUDE_SUBSECTIONS" => "Y",
-                    "SHOW_ALL_WO_SECTION" => "Y",
-                    "USE_COMPARE" => "N",
-                    "COMPATIBLE_MODE" => "Y",
-                ],
-                false
-            );
-            ?>
-        </section>
-    </div>
-
-    <section class="catalog-about section-padding">
-        <div class="about__content">
-            <h2 class="about__title"><?= $iblockData['NAME'] ?: 'Готовый бизнес' ?></h2>
-            <div class="about__tab-content js-tab-content is-active" data-tab="overview">
-                <?= $iblockData['DESCRIPTION'] ?: '<p>Описание для этого раздела еще не добавлено.</p>' ?>
-            </div>
+                    false
+                );
+                ?>
+            </section>
         </div>
-    </section>
 
-    <? $APPLICATION->IncludeComponent("custom:feedback.section", ".default", []); ?>
-</div>
+        <section class="catalog-about section-padding">
+            <div class="about__content">
+                <h2 class="about__title"><?= $iblockData['NAME'] ?: 'Готовый бизнес' ?></h2>
+                <div class="about__tab-content js-tab-content is-active" data-tab="overview">
+                    <?= $iblockData['DESCRIPTION'] ?: '<p>Описание для этого раздела еще не добавлено.</p>' ?>
+                </div>
+            </div>
+        </section>
+
+        <? $APPLICATION->IncludeComponent("custom:feedback.section", ".default", []); ?>
+    </div>
 
     <!-- PopUp -->
     <div class="page-business__popup-form popup-form-wrapper js-cart-modal" id="mainPopupFormWrapper"
-         style="display: none;">
+        style="display: none;">
 
         <!-- ВАЖНО: У формы теперь есть класс js-ajax-form, чтобы ее "подхватил" form-actions.js -->
         <form class="popup-form js-ajax-form" id="businessCartForm" data-metric-goal="send-biznes-lead">
 
-            <button type="button" class="popup-form__close-btn menu-close" id="closeMainPopupFormBtn" aria-label="Закрыть">
-                    <span>
-                        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <path d="M17 1L1 17M1 1L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                  stroke-linejoin="round"></path>
-                        </svg>
-                    </span>
+            <button type="button" class="popup-form__close-btn menu-close" id="closeMainPopupFormBtn"
+                aria-label="Закрыть">
+                <span>
+                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17 1L1 17M1 1L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                    </svg>
+                </span>
             </button>
 
             <p class="popup-form__text">Получить КП на готовый бизнес</p>
@@ -134,16 +127,16 @@ if (CModule::IncludeModule('iblock')) {
 
             <label for="cart_client_name">Ваше имя*:</label>
             <input type="text" name="client_name" id="cart_client_name" placeholder="Имя"
-                   class="contact-form__input form-input" required aria-label="Имя">
+                class="contact-form__input form-input" required aria-label="Имя">
 
             <label for="cart_client_phone">Телефон*:</label>
             <input type="tel" name="client_phone" id="cart_client_phone" placeholder="Телефон*"
-                   class="contact-form__input form-input js-phone-mask" required aria-label="Номер телефона">
+                class="contact-form__input form-input js-phone-mask" required aria-label="Номер телефона">
 
             <label for="business_cart_client_email">Email:</label>
             <input type="email" name="client_email" id="business_cart_client_email"
-                   placeholder="your@email.com (необязательно)" class="contact-form__input form-input"
-                   aria-label="Электронная почта">
+                placeholder="your@email.com (необязательно)" class="contact-form__input form-input"
+                aria-label="Электронная почта">
 
 
             <input type="hidden" name="source_id" value="41">
@@ -159,14 +152,13 @@ if (CModule::IncludeModule('iblock')) {
             <button type="submit" class="btn btn-primary">Получить КП</button>
 
             <div class="form-group form-check mb-3">
-                <input type="checkbox" id="privacy-policy-main" name="privacy-policy"
-                       class="form-check-input" required>
+                <input type="checkbox" id="privacy-policy-main" name="privacy-policy" class="form-check-input" required>
                 <label for="privacy-policy-main" class="form-check-label">Согласен(а) с <a
-                            href="/policy-confidenciales/" target="_blank"><u>политикой
+                        href="/policy-confidenciales/" target="_blank"><u>политикой
                             конфиденциальности</u></a></label>
             </div>
             <p class="form-error-message" style="color: red; display: none;"></p>
         </form>
     </div>
 
-<?php require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/footer.php"); ?>
+    <?php require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/footer.php"); ?>

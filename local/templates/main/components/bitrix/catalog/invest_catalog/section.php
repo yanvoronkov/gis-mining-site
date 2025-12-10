@@ -37,9 +37,26 @@ if (isset($arParams["SECTION_LIST_TEMPLATE"]) && !empty($arParams["SECTION_LIST_
     $listTemplate = $arParams["SECTION_LIST_TEMPLATE"];
 }
 
-// ====================================================================
-// РЕЖИМ ГРУППИРОВКИ ПО РАЗДЕЛАМ (для Готового бизнеса)
-// ====================================================================
+?>
+    <div class="catalog-page__body">
+        <!-- Сайдбар -->
+        <?php $APPLICATION->IncludeComponent(
+            "custom:catalog.sidebar",
+            ".default",
+            [
+                "IBLOCK_ID" => $arParams["IBLOCK_ID"],
+                "SHOW_FILTER" => "N", // В контентных разделах фильтр обычно не нужен, или включить по необходимости
+                "SEF_RULE" => "", // Если нужен фильтр, передать $arResult["FOLDER"] . ...
+                "FILTER_NAME" => "arrFilter",
+            ]
+        ); ?>
+
+        <!-- Основной контент -->
+        <div class="catalog-page__content">
+            <?php
+            // ====================================================================
+            // ВЫБОР ШАБЛОНА СПИСКА
+            // ====================================================================
 if ($listTemplate === "business_grouped") {
     // Получаем разделы инфоблока для группировки
     $sections = [];
