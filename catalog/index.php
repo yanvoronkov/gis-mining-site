@@ -7,6 +7,7 @@
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/header.php");
 
 $APPLICATION->SetTitle("Каталог оборудования для майнинга");
+$APPLICATION->SetPageProperty("TITLE", "Купить оборудование для майнинга — Каталог продукции от «Gis Mining»");
 $APPLICATION->SetPageProperty("header_right_class", "color-block");
 $APPLICATION->SetPageProperty("h1_class", "catalog-page__title highlighted-color");
 

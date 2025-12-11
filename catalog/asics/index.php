@@ -67,6 +67,7 @@ $APPLICATION->IncludeComponent(
 		"SECTION_ID_VARIABLE" => "SECTION_ID",
 		"PRODUCT_QUANTITY_VARIABLE" => "quantity",
 		"PRODUCT_PROPS_VARIABLE" => "prop",
+		
 
 		// SEF режим
 		"SEF_MODE" => "Y",
