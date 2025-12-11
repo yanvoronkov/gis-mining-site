@@ -387,3 +387,113 @@ function handlerOnPriceUpdate($id, $arFields)
         }
     }
 }
+
+/**
+ * ======================================================================
+ * Автоматический обработчик для модуля SEO умного фильтра Lite
+ * ======================================================================
+ * Перехватывает запросы к красивым URL фильтров и устанавливает 
+ * SMART_FILTER_PATH автоматически на основе записей в инфоблоке модуля.
+ * 
+ * РАБОТАЕТ ДЛЯ ЛЮБЫХ URL:
+ * - /catalog/asics/filter-zec-crypto/
+ * - /catalog/asics/zec-asiki/
+ * - /catalog/videocard/nvidia-rtx/
+ * - и т.д.
+ * 
+ * Это избавляет от необходимости создавать физические папки для каждого фильтра.
+ */
+AddEventHandler("main", "OnBeforeProlog", function () {
+    // Проверяем, подключен ли модуль SEO фильтра
+    if (!\Bitrix\Main\Loader::includeModule('dwstroy.seochpulite')) {
+        return;
+    }
+
+    if (!\Bitrix\Main\Loader::includeModule('iblock')) {
+        return;
+    }
+
+    // Получаем текущий URL
+    $requestUri = $_SERVER['REQUEST_URI'];
+    $requestPath = parse_url($requestUri, PHP_URL_PATH);
+
+    // Нормализуем путь (убираем повторные слэши, добавляем завершающий если нет)
+    $requestPath = '/' . trim($requestPath, '/') . '/';
+
+    // Оптимизация: проверяем только запросы к каталогам
+    // Это исключает главную страницу, корзину, другие разделы и т.д.
+    if (strpos($requestPath, '/catalog/') !== 0) {
+        return; // Это не запрос к каталогу
+    }
+
+    // Исключаем прямые запросы к файлам (css, js, images)
+    if (preg_match('/\.(css|js|jpg|jpeg|png|gif|svg|webp|ico|woff|woff2|ttf|pdf)$/i', $requestPath)) {
+        return;
+    }
+
+    // ID инфоблока модуля SEO фильтра
+    $seoIblockId = 14; // ID инфоблока "ЧПУ" (dwstroy_seochpulite)
+
+    // Ищем запись с таким CODE (символьный код = полный путь новой ссылки)
+    // Примеры:
+    // - /catalog/asics/filter-zec-crypto/
+    // - /catalog/asics/zec-asiki/
+    // - /catalog/videocard/nvidia-8gb/
+    $dbElement = CIBlockElement::GetList(
+        [],
+        [
+            'IBLOCK_ID' => $seoIblockId,
+            'CODE' => $requestPath,
+            'ACTIVE' => 'Y'
+        ],
+        false,
+        false,
+        ['ID', 'IBLOCK_ID']
+    );
+
+    if ($arElement = $dbElement->Fetch()) {
+        // Запись найдена! Получаем OLD_URL
+        $dbProps = CIBlockElement::GetProperty(
+            $seoIblockId,
+            $arElement['ID'],
+            [],
+            ['CODE' => 'OLD_URL']
+        );
+
+        $oldUrl = '';
+        while ($arProp = $dbProps->Fetch()) {
+            if ($arProp['CODE'] == 'OLD_URL' && !empty($arProp['VALUE'])) {
+                $oldUrl = $arProp['VALUE'];
+                break;
+            }
+        }
+
+        if (!empty($oldUrl)) {
+            // Извлекаем SMART_FILTER_PATH из OLD_URL
+            // Формат: /catalog/asics/filter/crypto-is-zec/apply/
+            //                               ^^^^^^^^^^^^^^ - это SMART_FILTER_PATH
+            if (preg_match('#/filter/(.+?)/apply/?#', $oldUrl, $matches)) {
+                $smartFilterPath = rtrim($matches[1], '/');
+
+                // Устанавливаем SMART_FILTER_PATH в глобальные переменные
+                $_REQUEST['SMART_FILTER_PATH'] = $smartFilterPath;
+                $_GET['SMART_FILTER_PATH'] = $smartFilterPath;
+
+                // Логирование для отладки (можно закомментировать после проверки)
+                /*
+                $logFile = $_SERVER['DOCUMENT_ROOT'] . '/.gemini/seo_filter_auto.log';
+                $logData = date('Y-m-d H:i:s') . ' - SEO Filter Applied' . "\n";
+                $logData .= 'Request Path: ' . $requestPath . "\n";
+                $logData .= 'Element ID: ' . $arElement['ID'] . "\n";
+                $logData .= 'OLD_URL: ' . $oldUrl . "\n";
+                $logData .= 'SMART_FILTER_PATH: ' . $smartFilterPath . "\n";
+                $logData .= str_repeat('=', 80) . "\n";
+                @file_put_contents($logFile, $logData, FILE_APPEND);
+                */
+            }
+        }
+    }
+    // Если запись НЕ найдена - ничего не делаем, запрос обрабатывается стандартно
+    // (это может быть раздел каталога, товар, или несуществующая страница)
+
+}, 10); // Приоритет 10 - выполнится раньше большинства обработчиков
