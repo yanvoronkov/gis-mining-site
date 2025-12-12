@@ -98,10 +98,34 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
     $fullPageUrl = $protocol . '://' . $serverName . $pageUrl;
 
     // Также формируем URL для OG-картинки, чтобы он тоже был правильным
-    $ogImageUrl = $protocol . '://' . $serverName . '/local/templates/main/assets/img/home/home_open-graph_image.png'; // Убедитесь, что путь правильный
+    $ogImageUrl = $protocol . '://' . $serverName . '/local/templates/main/assets/img/home/home_open-graph_image.png';
+
+    // --- ФОРМИРОВАНИЕ CANONICAL URL ---
+    // Canonical должен указывать на базовую версию страницы без:
+    // - GET-параметров (фильтры, utm и т.д.)
+    // - Пагинации (/page-2/, /page-3/)
+    // - Суффикса калькулятора (/calculator-dohodnosti/)
     
-    // --- ДОПОЛНИТЕЛЬНЫЕ ВАЖНЫЕ ТЕГИ ---
-    $APPLICATION->AddHeadString('<link rel="canonical" href="' . $fullPageUrl . '">', true);
+    $canonicalUrl = $pageUrl;
+
+    // 1. Удаляем пагинацию (если есть)
+    $canonicalUrl = preg_replace('#/page-\d+/?$#', '/', $canonicalUrl);
+
+    // 2. Удаляем суффикс калькулятора (если есть)
+    $canonicalUrl = preg_replace('#/calculator-dohodnosti/?$#', '/', $canonicalUrl);
+
+    // 3. Нормализуем - убираем двойные слеши и добавляем trailing slash
+    $canonicalUrl = preg_replace('#/+#', '/', $canonicalUrl); // Убираем двойные слеши
+    if ($canonicalUrl !== '/' && substr($canonicalUrl, -1) !== '/') {
+        $canonicalUrl .= '/'; // Добавляем trailing slash
+    }
+
+    $fullPageUrl = $protocol . '://' . $serverName . $canonicalUrl;
+
+    // --- УСТАНОВКА CANONICAL URL ---
+    // Устанавливаем через SetLink - это правильный способ в Bitrix
+    // ShowLink("canonical") выведет этот тег в нужном месте
+    $APPLICATION->SetLink("canonical", $fullPageUrl);
 
 
     // --- РЕГИСТРАЦИЯ ОТЛОЖЕННОЙ ФУНКЦИИ ДЛЯ МЕТА-ТЕГОВ ---
