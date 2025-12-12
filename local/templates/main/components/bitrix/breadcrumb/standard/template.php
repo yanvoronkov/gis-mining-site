@@ -39,21 +39,28 @@ for ($index = 0; $index < $itemCount; ++$index) {
     $title = htmlspecialcharsex($arResult[$index]["TITLE"]);
     $link = $arResult[$index]["LINK"];
 
-    // Формируем полный URL для микроразметки
-    $item = '';
-    if ($link <> "") {
-        $protocol = CMain::IsHTTPS() ? "https" : "http";
-        $domain = $_SERVER['HTTP_HOST'];
-        $cleanDomain = preg_replace('/:\d+$/', '', $domain);
-        $item = $protocol . '://' . $cleanDomain . $link;
-    }
-
-    $itemListElement[] = [
+    // Формируем элемент списка
+    $listItem = [
         '@type' => 'ListItem',
         'position' => $index + 1,
-        'name' => $title,
-        'item' => $item
+        'name' => $title
     ];
+
+    // Формируем полный URL
+    $protocol = CMain::IsHTTPS() ? "https" : "http";
+    $domain = $_SERVER['HTTP_HOST'];
+    $cleanDomain = preg_replace('/:\d+$/', '', $domain);
+
+    // Если есть ссылка - используем её, иначе текущий URL страницы
+    if ($link <> "") {
+        $listItem['item'] = $protocol . '://' . $cleanDomain . $link;
+    } else {
+        // Для последнего элемента (текущей страницы) используем полный URL
+        $currentUri = $_SERVER['REQUEST_URI'];
+        $listItem['item'] = $protocol . '://' . $cleanDomain . $currentUri;
+    }
+
+    $itemListElement[] = $listItem;
 }
 
 // --- ВЫВОД СКРИПТА С МИКРОРАЗМЕТКОЙ ---
