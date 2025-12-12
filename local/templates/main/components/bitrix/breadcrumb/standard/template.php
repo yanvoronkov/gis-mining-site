@@ -70,10 +70,10 @@ $schema = [
     'itemListElement' => $itemListElement
 ];
 
-// Регистрируем схему в универсальной системе JSON-LD (вместо AddViewContent)
-$schemas = $APPLICATION->GetPageProperty('json_ld_schemas') ?: [];
-$schemas['BreadcrumbList'] = $schema;
-$APPLICATION->SetPageProperty('json_ld_schemas', $schemas);
+// Вывод схемы через ViewContent (будет показано в footer.php)
+$APPLICATION->AddViewContent('json_ld_schemas', '<script type="application/ld+json">' . "\n" .
+    json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) .
+    "\n" . '</script>' . "\n");
 
 
 // --- ВЫВОД ВИЗУАЛЬНЫХ ХЛЕБНЫХ КРОШЕК ---

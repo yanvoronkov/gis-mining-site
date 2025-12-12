@@ -86,7 +86,7 @@ if (!empty($arResult['PROPERTIES']['CML2_ARTICLE']['VALUE'])) {
     $productSchema['sku'] = $arResult['PROPERTIES']['CML2_ARTICLE']['VALUE'];
 }
 
-// Регистрируем схему в универсальной системе
-$schemas = $APPLICATION->GetPageProperty('json_ld_schemas') ?: [];
-$schemas['Product'] = $productSchema;
-$APPLICATION->SetPageProperty('json_ld_schemas', $schemas);
+// Вывод схемы через ViewContent (будет показано в footer.php)
+$APPLICATION->AddViewContent('json_ld_schemas', '<script type="application/ld+json">' . "\n" .
+    json_encode($productSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) .
+    "\n" . '</script>' . "\n");

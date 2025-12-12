@@ -123,26 +123,28 @@ function renderCustomMetaTags()
  * 
  * Использование в компонентах:
  * 
- * $schemas = $APPLICATION->GetPageProperty('json_ld_schemas') ?: [];
- * $schemas['Product'] = [
+ * $productSchema = [
  *     '@context' => 'https://schema.org/',
  *     '@type' => 'Product',
  *     'name' => $arResult['NAME'],
- *     ...
+ *     // ... другие свойства продукта
  * ];
- * $APPLICATION->SetPageProperty('json_ld_schemas', $schemas);
+ * 
+ * // Регистрируем через глобальную переменную
+ * global $GLOBAL_JSON_LD_SCHEMAS;
+ * if (!isset($GLOBAL_JSON_LD_SCHEMAS)) {
+ *     $GLOBAL_JSON_LD_SCHEMAS = [];
+ * }
+ * $GLOBAL_JSON_LD_SCHEMAS['Product'] = $productSchema;
  * 
  * @return string HTML с тегами <script type="application/ld+json">
  */
 function renderJsonLdSchemas()
 {
-    global $APPLICATION;
+    global $GLOBAL_JSON_LD_SCHEMAS;
 
-    // Получаем зарегистрированные схемы из компонентов
-    $schemas = $APPLICATION->GetPageProperty('json_ld_schemas');
-    if (!is_array($schemas)) {
-        $schemas = [];
-    }
+    // Получаем зарегистрированные схемы из глобальной переменной
+    $schemas = isset($GLOBAL_JSON_LD_SCHEMAS) && is_array($GLOBAL_JSON_LD_SCHEMAS) ? $GLOBAL_JSON_LD_SCHEMAS : [];
 
     // --- АВТОМАТИЧЕСКОЕ ДОБАВЛЕНИЕ БАЗОВЫХ СХЕМ ---
 

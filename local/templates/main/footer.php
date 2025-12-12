@@ -690,9 +690,31 @@ include $_SERVER["DOCUMENT_ROOT"] . SITE_TEMPLATE_PATH . '/include/mobile_menu.p
 ?>
 
 <?php
-// Выводим JSON-LD схемы в конце страницы, после того как все компоненты зарегистрировали свои схемы
-// Google индексирует JSON-LD независимо от расположения в HTML
-echo renderJsonLdSchemas();
+// Выводим базовые схемы Organization и WebSite
+$protocol = \Bitrix\Main\Context::getCurrent()->getRequest()->isHttps() ? 'https' : 'http';
+$serverName = $_SERVER['SERVER_NAME'];
+
+echo '<script type="application/ld+json">' . "\n";
+echo json_encode([
+    '@context' => 'https://schema.org',
+    '@type' => 'Organization',
+    'name' => 'GIS Mining',
+    'url' => $protocol . '://' . $serverName . '/',
+    'logo' => $protocol . '://' . $serverName . '/local/templates/main/assets/img/header/logo_header_white.png'
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+echo "\n</script>\n";
+
+echo '<script type="application/ld+json">' . "\n";
+echo json_encode([
+    '@context' => 'https://schema.org',
+    '@type' => 'WebSite',
+    'url' => $protocol . '://' . $serverName . '/',
+    'name' => 'GIS Mining'
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+echo "\n</script>\n";
+
+// Выводим схемы компонентов (BreadcrumbList, Product, и т.д.)
+$APPLICATION->ShowViewContent('json_ld_schemas');
 ?>
 
 
