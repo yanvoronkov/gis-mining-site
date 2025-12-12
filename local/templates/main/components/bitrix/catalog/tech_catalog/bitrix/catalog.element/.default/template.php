@@ -833,11 +833,11 @@ $viewedProductIds = array_slice($viewedProductIds, 0, 4);
                                 </div>
                             </div>
                             <?php /*<div class="profit-calculator__metric-card preloader-block">
-     <div class="profit-calculator__metric-card-label">Окупаемость</div>
-     <div class="profit-calculator__metric-card-value highlighted-color">
-       <span id="pc-payback" class="preloader-text">—</span>
-     </div>
-   </div>*/ ?>
+    <div class="profit-calculator__metric-card-label">Окупаемость</div>
+    <div class="profit-calculator__metric-card-value highlighted-color">
+      <span id="pc-payback" class="preloader-text">—</span>
+    </div>
+  </div>*/ ?>
                         </div>
 
                         <div class="profit-calculator__fields">
@@ -1590,66 +1590,13 @@ echo "</pre>";
 </section> -->
 
 
+
+
 <?php
-// --- НАЧАЛО БЛОКА МИКРОРАЗМЕТКИ SCHEMA.ORG ДЛЯ ТОВАРА ---
-
-// Переменные, которые могли быть не определены, если epilog еще не выполнился
-$protocol = \Bitrix\Main\Context::getCurrent()->getRequest()->isHttps() ? "https" : "http";
-
-// Получаем имя сервера из настроек сайта. Это самый надежный способ.
-// Константа SITE_SERVER_NAME определяется на основе поля "URL сервера", которое мы настроили.
-$serverName = defined('SITE_SERVER_NAME') && strlen(SITE_SERVER_NAME) > 0 ? SITE_SERVER_NAME : $_SERVER['SERVER_NAME'];
-
-$fullPageUrl = $protocol . '://' . $serverName . $arResult['DETAIL_PAGE_URL'];
-$siteName = COption::GetOptionString("main", "site_name", "GIS Mining");
-
-// Собираем данные для разметки из $arResult (здесь он называется $product)
-$schema = [
-    '@context' => 'https://schema.org',
-    '@type' => 'Product',
-    'name' => $arResult['NAME'],
-    'description' => strip_tags(!empty($arResult['PREVIEW_TEXT']) ? $arResult['PREVIEW_TEXT'] : $arResult['DETAIL_TEXT']),
-    'sku' => $arResult['ID'], // Артикул или ID товара
-];
-
-// Добавляем изображение
-if (!empty($arResult['DETAIL_PICTURE']['SRC'])) {
-    $schema['image'] = $protocol . '://' . $serverName . $arResult['DETAIL_PICTURE']['SRC'];
-}
-
-// Добавляем данные о предложении (цена, наличие)
-// Используем массив ITEM_PRICES, если он есть, иначе - PRICES
-$priceInfo = $arResult['ITEM_PRICES'][0] ?? $arResult['PRICES']['BASE'] ?? null;
-
-if ($priceInfo && !empty($priceInfo['PRICE'])) {
-    $schema['offers'] = [
-        '@type' => 'Offer',
-        'priceCurrency' => $priceInfo['CURRENCY'],
-        'price' => $priceInfo['PRICE'],
-        'url' => $fullPageUrl,
-        'availability' => ($arResult['CATALOG_QUANTITY'] > 0) ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
-        'seller' => [
-            '@type' => 'Organization',
-            'name' => $siteName
-        ]
-    ];
-}
-
-// Добавляем бренд (Производитель)
-if (!empty($arResult['PROPERTIES']['MANUFACTURER']['VALUE'])) {
-    $schema['brand'] = [
-        '@type' => 'Brand',
-        'name' => $arResult['PROPERTIES']['MANUFACTURER']['VALUE']
-    ];
-}
-
-// Выводим разметку в формате JSON-LD
+// JSON-LD Product schema теперь генерируется в component_epilog.php через универсальную систему
 ?>
-<script type="application/ld+json">
-    <?= json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>
 
-</script>
-<?php // --- КОНЕЦ БЛОКА МИКРОРАЗМЕТКИ --- ?>
+
 
 <!-- Полноэкранный слайдер галереи -->
 <div class="fullscreen-gallery" id="fullscreen-gallery">
