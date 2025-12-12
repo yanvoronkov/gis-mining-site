@@ -123,9 +123,9 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
     $fullPageUrl = $protocol . '://' . $serverName . $canonicalUrl;
 
     // --- УСТАНОВКА CANONICAL URL ---
-    // Устанавливаем через SetLink - это правильный способ в Bitrix
-    // ShowLink("canonical") выведет этот тег в нужном месте
-    $APPLICATION->SetLink("canonical", $fullPageUrl);
+    // Устанавливаем через AddHeadString
+    // ShowLink("canonical") может вывести canonical из админки, поэтому используем только AddHeadString
+    $APPLICATION->AddHeadString('<link rel="canonical" href="' . $fullPageUrl . '">', true);
 
 
     // --- РЕГИСТРАЦИЯ ОТЛОЖЕННОЙ ФУНКЦИИ ДЛЯ МЕТА-ТЕГОВ ---
@@ -142,7 +142,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
     // Убираем мета-тег keywords и выводим остальные, заменяя ShowHead() набором отдельных вызовов
     $APPLICATION->ShowMeta("robots");
     $APPLICATION->ShowMeta("description");
-    $APPLICATION->ShowLink("canonical");
+    // ShowLink("canonical") убран - canonical уже установлен через AddHeadString выше
     $APPLICATION->ShowCSS();
     $APPLICATION->ShowHeadStrings();
     $APPLICATION->ShowHeadScripts();
