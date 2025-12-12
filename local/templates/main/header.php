@@ -107,9 +107,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
     // --- РЕГИСТРАЦИЯ ОТЛОЖЕННОЙ ФУНКЦИИ ДЛЯ МЕТА-ТЕГОВ ---
     $APPLICATION->AddBufferContent('renderCustomMetaTags');
 
-    // --- РЕГИСТРАЦИЯ ОТЛОЖЕННОЙ ФУНКЦИИ ДЛЯ JSON-LD СХЕМ ---
-    $APPLICATION->AddBufferContent('renderJsonLdSchemas');
-
+    // JSON-LD схемы выводятся в footer.php, после выполнения всех компонентов страницы
+    
     // ГЛАВНАЯ ФУНКЦИЯ БИТРИКСА. Выводит все, что мы зарегистрировали выше,
     // а также динамические мета-теги (description, keywords, robots, canonical), которые вы зададите в админке.
     ob_start();

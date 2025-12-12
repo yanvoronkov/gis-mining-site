@@ -689,6 +689,11 @@ $APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH . '/include/mobile_menu.css');
 include $_SERVER["DOCUMENT_ROOT"] . SITE_TEMPLATE_PATH . '/include/mobile_menu.php';
 ?>
 
+<?php
+// Выводим JSON-LD схемы в конце страницы, после того как все компоненты зарегистрировали свои схемы
+// Google индексирует JSON-LD независимо от расположения в HTML
+echo renderJsonLdSchemas();
+?>
 
 
 </body>
