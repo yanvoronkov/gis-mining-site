@@ -87,4 +87,6 @@ if (!empty($arResult['PROPERTIES']['CML2_ARTICLE']['VALUE'])) {
 }
 
 // Регистрируем схему в универсальной системе
-$APPLICATION->SetPageProperty('json_ld_schemas', ['Product' => $productSchema]);
+$schemas = $APPLICATION->GetPageProperty('json_ld_schemas') ?: [];
+$schemas['Product'] = $productSchema;
+$APPLICATION->SetPageProperty('json_ld_schemas', $schemas);
