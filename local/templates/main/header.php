@@ -105,6 +105,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
     // - GET-параметров (фильтры, utm и т.д.)
     // - Пагинации (/page-2/, /page-3/)
     // - Суффикса калькулятора (/calculator-dohodnosti/)
+    // - SEO-фильтров (/filter-*)
     
     $canonicalUrl = $pageUrl;
 
@@ -114,7 +115,10 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
     // 2. Удаляем суффикс калькулятора (если есть)
     $canonicalUrl = preg_replace('#/calculator-dohodnosti/?$#', '/', $canonicalUrl);
 
-    // 3. Нормализуем - убираем двойные слеши и добавляем trailing slash
+    // 3. Удаляем SEO-фильтры (если есть) - /filter-*/
+    $canonicalUrl = preg_replace('#/filter-[^/]+/?$#', '/', $canonicalUrl);
+
+    // 4. Нормализуем - убираем двойные слеши и добавляем trailing slash
     $canonicalUrl = preg_replace('#/+#', '/', $canonicalUrl); // Убираем двойные слеши
     if ($canonicalUrl !== '/' && substr($canonicalUrl, -1) !== '/') {
         $canonicalUrl .= '/'; // Добавляем trailing slash
