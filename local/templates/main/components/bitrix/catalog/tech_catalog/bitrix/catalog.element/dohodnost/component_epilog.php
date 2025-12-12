@@ -229,11 +229,16 @@ if (!empty($arResult['DETAIL_PICTURE']['SRC'])) {
     $productSchema['image'] = $protocol . '://' . $cleanDomain . $arResult['DETAIL_PICTURE']['SRC'];
 }
 
-// Brand (из свойства MANUFACTURER или дефолт)
+// Brand (проверяем MANUFACTURER (ASIC) или BRAND (GPU/видеокарты))
 if (!empty($arResult['PROPERTIES']['MANUFACTURER']['VALUE'])) {
     $productSchema['brand'] = [
         '@type' => 'Brand',
         'name' => $arResult['PROPERTIES']['MANUFACTURER']['VALUE']
+    ];
+} elseif (!empty($arResult['PROPERTIES']['BRAND']['VALUE'])) {
+    $productSchema['brand'] = [
+        '@type' => 'Brand',
+        'name' => $arResult['PROPERTIES']['BRAND']['VALUE']
     ];
 } else {
     // Дефолтный бренд по типу каталога
