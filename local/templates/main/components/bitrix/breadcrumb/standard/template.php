@@ -63,8 +63,11 @@ $schema = [
     'itemListElement' => $itemListElement
 ];
 
-// Выводим JSON-LD микроразметку через AddViewContent для корректного размещения перед </body>
-$APPLICATION->AddViewContent('before_body_close', '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . '</script>');
+// Регистрируем схему в универсальной системе JSON-LD (вместо AddViewContent)
+$schemas = $APPLICATION->GetPageProperty('json_ld_schemas') ?: [];
+$schemas['BreadcrumbList'] = $schema;
+$APPLICATION->SetPageProperty('json_ld_schemas', $schemas);
+
 
 // --- ВЫВОД ВИЗУАЛЬНЫХ ХЛЕБНЫХ КРОШЕК ---
 $strReturn = '<nav class="breadcrumbs container" aria-label="Хлебные крошки">';
