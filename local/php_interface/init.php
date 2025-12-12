@@ -118,6 +118,101 @@ function renderCustomMetaTags()
 }
 
 /**
+ * Универсальная функция для рендеринга JSON-LD микроразметки (Schema.org).
+ * Работает по аналогии с renderCustomMetaTags() - централизованно управляет всеми схемами.
+ * 
+ * Использование в компонентах:
+ * 
+ * $schemas = $APPLICATION->GetPageProperty('json_ld_schemas') ?: [];
+ * $schemas['Product'] = [
+ *     '@context' => 'https://schema.org/',
+ *     '@type' => 'Product',
+ *     'name' => $arResult['NAME'],
+ *     ...
+ * ];
+ * $APPLICATION->SetPageProperty('json_ld_schemas', $schemas);
+ * 
+ * @return string HTML с тегами <script type="application/ld+json">
+ */
+function renderJsonLdSchemas()
+{
+    global $APPLICATION;
+
+    // Получаем зарегистрированные схемы из компонентов
+    $schemas = $APPLICATION->GetPageProperty('json_ld_schemas');
+    if (!is_array($schemas)) {
+        $schemas = [];
+    }
+
+    // --- АВТОМАТИЧЕСКОЕ ДОБАВЛЕНИЕ БАЗОВЫХ СХЕМ ---
+
+    // 1. Organization (на всех страницах, если не задана явно)
+    if (!isset($schemas['Organization'])) {
+        $protocol = \Bitrix\Main\Context::getCurrent()->getRequest()->isHttps() ? 'https' : 'http';
+        $serverName = $_SERVER['SERVER_NAME'];
+
+        $schemas['Organization'] = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Organization',
+            'name' => 'GIS Mining',
+            'url' => $protocol . '://' . $serverName . '/',
+            'logo' => $protocol . '://' . $serverName . '/local/templates/main/assets/img/header/logo_header_white.png',
+            'contactPoint' => [
+                '@type' => 'ContactPoint',
+                'telephone' => '+78007777798',
+                'contactType' => 'sales',
+                'areaServed' => 'RU',
+                'availableLanguage' => 'ru'
+            ],
+            'sameAs' => [
+                'https://www.facebook.com/gismining',
+                'https://www.instagram.com/gismining',
+                'https://vk.com/gis_mining',
+                'https://t.me/gismining',
+                'https://vc.ru/id4624566',
+                'https://ru.tradingview.com/u/GIS-Mining/',
+                'https://dzen.ru/user/wz4h9o1t6gyei9xirsrwh20ctri'
+            ]
+        ];
+    }
+
+    // 2. WebSite (поиск по сайту, на всех страницах, если не задан явно)
+    if (!isset($schemas['WebSite'])) {
+        $protocol = \Bitrix\Main\Context::getCurrent()->getRequest()->isHttps() ? 'https' : 'http';
+        $serverName = $_SERVER['SERVER_NAME'];
+
+        $schemas['WebSite'] = [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            '@id' => $protocol . '://' . $serverName . '/#website',
+            'url' => $protocol . '://' . $serverName . '/',
+            'name' => 'GIS Mining',
+            'publisher' => [
+                '@id' => $protocol . '://' . $serverName . '/#org'
+            ],
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => $protocol . '://' . $serverName . '/search/?q={search_term_string}',
+                'query-input' => 'required name=search_term_string'
+            ]
+        ];
+    }
+
+    // --- ФОРМИРУЕМ ВЫВОД ---
+    $output = '';
+
+    foreach ($schemas as $schemaType => $schema) {
+        if (!empty($schema)) {
+            $output .= '<script type="application/ld+json">' . "\n";
+            $output .= json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+            $output .= "\n" . '</script>' . "\n";
+        }
+    }
+
+    return $output;
+}
+
+/**
  * ======================================================================
  * Подключение агентов и прочих скриптов
  * ======================================================================

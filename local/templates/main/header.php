@@ -103,8 +103,12 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
     // --- ДОПОЛНИТЕЛЬНЫЕ ВАЖНЫЕ ТЕГИ ---
     $APPLICATION->AddHeadString('<link rel="canonical" href="' . $fullPageUrl . '">', true);
 
+
     // --- РЕГИСТРАЦИЯ ОТЛОЖЕННОЙ ФУНКЦИИ ДЛЯ МЕТА-ТЕГОВ ---
     $APPLICATION->AddBufferContent('renderCustomMetaTags');
+
+    // --- РЕГИСТРАЦИЯ ОТЛОЖЕННОЙ ФУНКЦИИ ДЛЯ JSON-LD СХЕМ ---
+    $APPLICATION->AddBufferContent('renderJsonLdSchemas');
 
     // ГЛАВНАЯ ФУНКЦИЯ БИТРИКСА. Выводит все, что мы зарегистрировали выше,
     // а также динамические мета-теги (description, keywords, robots, canonical), которые вы зададите в админке.
