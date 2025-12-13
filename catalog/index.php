@@ -47,27 +47,15 @@ $APPLICATION->SetPageProperty("description", "Полный каталог обо
             );
             ?>
 
-            <!-- Описание каталога -->
-            <section class="catalog-about section-padding">
-                <div class="about__content">
-                    <h2 class="about__title">О каталоге GIS Mining</h2>
-                    <div class="about__tab-content js-tab-content is-active" data-tab="overview">
-                        <p>GIS Mining предлагает полный спектр оборудования и решений для майнинга криптовалют:</p>
-                        <ul>
-                            <li><strong>ASIC-майнеры</strong> — профессиональное оборудование для добычи Bitcoin и
-                                других криптовалют</li>
-                            <li><strong>Видеокарты</strong> — мощные GPU для майнинга и других вычислительных задач</li>
-                            <li><strong>ГПУ-станции</strong> — газопоршневые электростанции для автономного
-                                энергоснабжения</li>
-                            <li><strong>Инвестиции</strong> — возможности инвестирования в майнинговую инфраструктуру
-                            </li>
-                            <li><strong>Контейнеры</strong> — готовые контейнерные решения для размещения оборудования
-                            </li>
-                            <li><strong>Готовый бизнес</strong> — комплексные решения под ключ</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
+    <!-- Описание секции -->
+    <section class="catalog-about section-padding">
+        <div class="about__content">
+            <h2 class="about__title"><?= $iblockData['NAME'] ?: 'ASIC-майнеры' ?></h2>
+            <div class="about__tab-content js-tab-content is-active" data-tab="overview">
+                <?= $iblockData['DESCRIPTION'] ?: '<p>Описание для этого раздела еще не добавлено.</p>' ?>
+            </div>
+        </div>
+    </section>
 
             <!-- Секция обратной связи -->
             <? $APPLICATION->IncludeComponent(
